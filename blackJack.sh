@@ -1,7 +1,7 @@
 #!/bin/bash
 
 input
-wager=0
+wager=0.0
 # Create an empty "shoe" (array), to hold a deck of 52 cards:
 user_hand_value=0
 dealer_hand_value=0
@@ -83,67 +83,67 @@ show_hand () {
 
         if (($pos == 1)); then 
             printf "$A "
-            ((user_hand_value+11)) 
+             let "user_hand_value+=11" 
         fi
 
         if (($pos == 2)); then 
             printf "$two " 
-            ((user_hand_value+2)) 
+             let "user_hand_value+=pos"
         fi
 
         if (($pos == 3)); then 
             printf "$three " 
-            ((user_hand_value+3)) 
+             let "user_hand_value+=pos"
         fi
         
         if (($pos == 4)); then 
             printf "$four " 
-            ((user_hand_value+4)) 
+             let "user_hand_value+=pos"
         fi
 
         if (($pos == 5)); then 
             printf "$five " 
-            ((user_hand_value+5)) 
+             let "user_hand_value+=pos"
         fi
 
         if (($pos == 6)); then 
             printf "$six " 
-            ((user_hand_value+6)) 
+             let "user_hand_value+=pos"
         fi
 
         if (($pos == 7)); then 
             printf "$seven "
-            ((user_hand_value+7))  
+             let "user_hand_value+=pos" 
         fi
 
         if (($pos == 8)); then 
             printf "$eigth " 
-            ((user_hand_value+8)) 
+             let "user_hand_value+=pos"
         fi
 
         if (($pos == 9)); then 
             printf "$nine " 
-            ((user_hand_value+9)) 
+             let "user_hand_value+=pos" 
         fi
 
         if (($pos == 10)); then 
             printf "$ten " 
-            ((user_hand_value+10)) 
+             let "user_hand_value+=pos" 
         fi
 
         if (($pos == 11)); then 
             printf "$jack " 
-            ((user_hand_value+10)) 
+            let "user_hand_value+=10"
         fi
 
         if (($pos == 12)); then 
             printf "$queen " 
-            ((user_hand_value+10)) 
+            let "user_hand_value+=10"
         fi
 
         if (($pos == 13)); then 
             printf "$king" 
-            ((user_hand_value+10)) 
+            let "user_hand_value+=10"
         fi
     done
 }
@@ -177,67 +177,66 @@ show_hand_dealer () {
 
        if (($pos == 1)); then 
             printf "$A "
-            ((user_hand_value+11)) 
+            let "dealer_hand_value+=11"
         fi
 
         if (($pos == 2)); then 
             printf "$two " 
-            ((user_hand_value+2)) 
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 3)); then 
             printf "$three " 
-            ((user_hand_value+3)) 
         fi
         
         if (($pos == 4)); then 
             printf "$four " 
-            ((user_hand_value+4)) 
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 5)); then 
             printf "$five " 
-            ((user_hand_value+5)) 
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 6)); then 
             printf "$six " 
-            ((user_hand_value+6)) 
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 7)); then 
             printf "$seven "
-            ((user_hand_value+7))  
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 8)); then 
             printf "$eigth " 
-            ((user_hand_value+8)) 
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 9)); then 
             printf "$nine " 
-            ((user_hand_value+9)) 
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 10)); then 
             printf "$ten " 
-            ((user_hand_value+10)) 
+            let "dealer_hand_value+=pos"
         fi
 
         if (($pos == 11)); then 
             printf "$jack " 
-            ((user_hand_value+10)) 
+            let "dealer_hand_value+=10"
         fi
 
         if (($pos == 12)); then 
             printf "$queen " 
-            ((user_hand_value+10)) 
+            let "dealer_hand_value+=10"
         fi
 
         if (($pos == 13)); then 
-            printf "$king" 
-            ((user_hand_value+10)) 
+            printf "$king " 
+            let "dealer_hand_value+=10"
         fi
 
     done
@@ -288,33 +287,8 @@ do
 
     show_hands
     printf "Wager: $wager \n"
-
-    if (($user_hand_value == 21)); then
-        continue_program=false
-        win_flag=true
-    fi
-
-    if (($user_hand_value < 21)) && (($dealer_hand_value < 21)) && (($user_hand_value < $dealer_hand_value)); then
-        ((wager*1.5))
-        continue_program=false
-        win_flag=true
-    fi 
-
-    if (($user_hand_value < 21)) && (($dealer_hand_value)); then
-        ((wager*1.5))
-        continue_program=false
-        win_flag=true
-    fi
-
-    if (($user_hand_value > 21)); then 
-        continue_program=false
-        win_flag=false
-    fi
-
-    if (($user_hand_value < 21)) && (($dealer_hand_value <= 21)) && (($dealer_hand_value < $user_hand_value)); then 
-        continue_program=false
-        win_flag=false
-    fi
+    printf "Hand Value: $user_hand_value \n"
+    printf "Dealer Hand Value: $dealer_hand_value \n"
 
     if $continue_program; then 
         printf "S: Stop playing  H: Draw another card from deck  D: Double wager and draw one, and only one more card\n
@@ -324,18 +298,47 @@ do
         if [ "$input" == "S" ]; then
             continue_program=false
         elif [ "$input" == "H" ]; then
+            if (($dealer_hand_value < 17)); then
+                deal
+                dealerDec+=($?)
+            fi
+            
             deal
-            userDec=($?)
-            deal
-            dealerDec=($?)
+            userDec+=($?)
         elif [ "$input" == "D" ]; then
+            if (($dealer_hand_value < 17)); then
+                deal
+                dealerDec+=($?)
+            fi
             deal
-            userDec=($?)
-            deal
-            dealerDec=($?)
-            wager = $((wager*2))
+            userDec+=($?)
+            let "wager*=2"
         fi
 
+    fi
+
+    if (($user_hand_value == 21)); then
+        continue_program=true
+        win_flag=true
+        printf "Congratulations, you won!  Why not play again? \n\n"
+    elif (($user_hand_value < 21)) && (($dealer_hand_value < 21)) && (($user_hand_value < $dealer_hand_value)); then
+        let "wager*=1.5 | bc -1"
+        continue_program=true
+        win_flag=true
+        printf "Congratulations, you won!  Why not play again? \n\n"
+    elif (($user_hand_value < 21)) && (($dealer_hand_value)); then
+        let "wager*=1.5 | bc -1"
+        continue_program=true
+        win_flag=true
+        printf "Congratulations, you won!  Why not play again? \n\n"
+    elif (($user_hand_value > 21)); then 
+        continue_program=false
+        win_flag=false
+        printf "Drat!  I lost!  Play again and gimmie a chance to get even! \n"
+    elif (($user_hand_value < 21)) && (($dealer_hand_value <= 21)) && (($dealer_hand_value < $user_hand_value)); then 
+        continue_program=false
+        win_flag=false
+        printf "Drat!  I lost!  Play again and gimmie a chance to get even! \n"
     fi
 
 done
