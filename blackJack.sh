@@ -1,5 +1,6 @@
 #!/bin/bash
-
+# Delano Bailey
+# 1704225
 input
 wager=0.0
 # Create an empty "shoe" (array), to hold a deck of 52 cards:
@@ -64,6 +65,7 @@ show_hand () {
     user_hand_value=0
     for i in "${userDec[@]}" 
     do
+        # Set of ifs that determin the type of card, Heart, Clubs, and so on
         if (( $i >= 1 && $i <= 13 )); then
             end=13
             printf "H"
@@ -81,6 +83,7 @@ show_hand () {
         offset=$((end-i))
         pos=$((13-offset))
 
+        # Set of ifs that determine the card value, A,J,K,2 and so on
         if (($pos == 1)); then 
             printf "$A "
              let "user_hand_value+=11" 
@@ -242,6 +245,7 @@ show_hand_dealer () {
     done
 }
 
+# Prints both the player and dealer hand
 show_hands () {
     printf "Player's hand: "
     show_hand
